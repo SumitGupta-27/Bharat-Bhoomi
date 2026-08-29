@@ -352,3 +352,9 @@
     padding-block: 8px 16px;
   }
 }
+/*This is the hover of the send feedback*/
+.help-menu__grievance-actions .btn--primary,
+.help-menu__grievance-actions .btn--primary:hover,
+.help-menu__grievance-actions .btn--primary:focus {
+  color: #ffffff;
+}

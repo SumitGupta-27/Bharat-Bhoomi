@@ -9,6 +9,7 @@ import HelpPage from "./pages/HelpPage.jsx";
 import ResourcePage from "./pages/ResourcePage.jsx";
 import FAQPage from "./pages/FAQPage.jsx";
 import FeedbackPage from "./pages/FeedbackPage.jsx";
+import AboutDetailPage from "./pages/AboutDetailPage.jsx";
 
 function Home() {
   return (
@@ -39,6 +40,7 @@ function App() {
           /help/videos — React Router always matches the static routes
           above first, so this never shadows /help/faq or /help/feedback. */}
       <Route path="/help/:slug" element={<ResourcePage />} />
+      <Route path="/about/:slug" element={<AboutDetailPage />} />
     </Routes>
   );
 }

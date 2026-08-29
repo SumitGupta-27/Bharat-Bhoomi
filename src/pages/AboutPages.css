@@ -1,0 +1,93 @@
+/* ============================================================
+   ABOUT DETAIL PAGES — /about/:slug
+   Reuses tokens from App.css. Self-contained, no HelpPages.css dependency.
+============================================================ */
+
+.about-page-body {
+  min-height: 60vh;
+}
+
+.about-subpage-header {
+  padding-block: 40px 8px;
+}
+.about-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+.about-back-link:hover {
+  color: var(--color-blue-600);
+}
+.about-back-link svg {
+  width: 15px;
+  height: 15px;
+  transform: rotate(180deg);
+}
+.about-subpage-header__eyebrow {
+  margin-top: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-blue-700);
+}
+.about-subpage-header__title {
+  margin-top: 8px;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--color-navy-900);
+  letter-spacing: -0.01em;
+}
+.about-subpage-header__desc {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  max-width: 620px;
+}
+
+.about-detail {
+  padding-block: 32px 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 680px) 1fr;
+  gap: 48px;
+}
+.about-detail__body p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+}
+
+/* Overview page for "cards" sections (Who We Are / People at Bharat Bhoomi) */
+.about-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+
+/* Related cards shown alongside an individual card detail page */
+.about-detail__aside-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  margin-bottom: 14px;
+}
+.about-detail__aside .about-card-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 1080px) {
+  .about-detail {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 780px) {
+  .about-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
