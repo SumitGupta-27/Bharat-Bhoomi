@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import HelpMenu from "./HelpMenu/HelpMenu.jsx";
 
 function Navbar() {
-  // Tracks whether the mobile menu is open or closed
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function toggleMenu() {
@@ -11,40 +12,58 @@ function Navbar() {
   return (
     <header className="navbar">
       <div className="container navbar__inner">
-        <a href="#" className="brand" aria-label="Bharat Bhoomi home">
+
+        {/* Brand now correctly goes to Home */}
+        <Link
+          to="/"
+          className="brand"
+          aria-label="Bharat Bhoomi home"
+        >
           <img
             className="indian_emblem"
             src="/images/Emblem_of_India_black.svg"
             alt=""
           />
+
           <span className="brand__text">
             <span className="brand__name">Bharat Bhoomi</span>
+
             <span className="brand__subtitle">
               National Land Records &amp; Governance Portal
             </span>
-            <span className="brand__gov">Government of India</span>
-          </span>
-        </a>
 
-        {/* aria-expanded reflects real state, and 'nav-links--open' class is
-            added when the menu is open so the CSS can show it on mobile */}
+            <span className="brand__gov">
+              Government of India
+            </span>
+          </span>
+        </Link>
+
         <nav
-          className={`nav-links ${isMenuOpen ? "nav-links--open" : ""}`}
+          className={`nav-links ${
+            isMenuOpen ? "nav-links--open" : ""
+          }`}
           aria-label="Primary"
         >
-          <a href="#" aria-current="page">
+          {/* Fixed Home button */}
+          <Link to="/">
             Home
-          </a>
+          </Link>
+
           <a href="#about">About</a>
           <a href="#features">Features</a>
           <a href="#dashboard">Dashboard</a>
-          <a href="#contact">Contact</a>
+
+          <HelpMenu />
         </nav>
 
         <div className="nav-actions">
-          <button className="btn btn--primary btn--sm" type="button">
+          <Link
+            className="btn btn--primary btn--sm"
+            to="/login"
+          >
             Login
-          </button>
+          </Link>
+
           <button
             className="nav-toggle"
             type="button"

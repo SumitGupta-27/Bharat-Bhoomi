@@ -713,7 +713,7 @@ p {
 }
 
 @media (max-width: 900px) {
-  .nav-links {
+  .nav-links:not(.nav-links--open) {
     display: none;
   }
   .nav-toggle {
