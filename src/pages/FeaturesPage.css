@@ -1,0 +1,132 @@
+/* ============================================================
+   FEATURES PAGE — /features
+   Reuses tokens from App.css and the icon-chip palette from FeaturesMenu.css.
+============================================================ */
+
+.features-page-body {
+  min-height: 60vh;
+}
+
+.features-hero {
+  background: var(--color-blue-50);
+  border-bottom: 1px solid var(--color-border);
+  padding-block: 60px 48px;
+  text-align: center;
+}
+.features-hero__eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-blue-700);
+}
+.features-hero__title {
+  margin-top: 10px;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--color-navy-900);
+}
+.features-hero__desc {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  max-width: 560px;
+  margin-inline: auto;
+}
+
+/* Quick jump links to each section */
+.features-jumplist {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+.features-jumplist a {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.features-jumplist a:hover {
+  border-color: var(--color-blue-600);
+  color: var(--color-blue-600);
+}
+
+.features-list {
+  padding-block: 8px 64px;
+}
+.feature-section {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 20px;
+  padding-block: 36px;
+  border-bottom: 1px solid var(--color-border);
+  /* keeps the anchored heading from hiding behind the sticky navbar */
+  scroll-margin-top: calc(var(--nav-height) + 16px);
+}
+.features-list .feature-section:last-child {
+  border-bottom: none;
+}
+
+.feature-section__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+}
+.feature-section__icon svg {
+  width: 26px;
+  height: 26px;
+}
+/* Same palette as .feature-card__icon--* / .features-menu__item-icon--* */
+.feature-section__icon--blue {
+  background: #e4edfc;
+  color: #2b62d1;
+}
+.feature-section__icon--indigo {
+  background: #eae6fb;
+  color: #6c4fd1;
+}
+.feature-section__icon--green {
+  background: var(--color-green-50);
+  color: var(--color-green-500);
+}
+.feature-section__icon--amber {
+  background: #fdf1e0;
+  color: #cc8a1f;
+}
+.feature-section__icon--teal {
+  background: #e1f3f0;
+  color: #1f9587;
+}
+
+.feature-section__title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--color-navy-900);
+}
+.feature-section__desc {
+  margin-top: 8px;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  max-width: 640px;
+}
+
+@media (max-width: 640px) {
+  .feature-section {
+    grid-template-columns: 1fr;
+  }
+  .feature-section__icon {
+    width: 44px;
+    height: 44px;
+  }
+}

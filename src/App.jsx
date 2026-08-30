@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Hero from "./components/Hero.jsx";
 import Statistics from "./components/Statistics.jsx";
@@ -10,6 +11,8 @@ import ResourcePage from "./pages/ResourcePage.jsx";
 import FAQPage from "./pages/FAQPage.jsx";
 import FeedbackPage from "./pages/FeedbackPage.jsx";
 import AboutDetailPage from "./pages/AboutDetailPage.jsx";
+import FeaturesPage from "./pages/FeaturesPage.jsx";
+
 
 function Home() {
   return (
@@ -28,20 +31,24 @@ function Home() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginPage />} />
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginPage />} />
 
-      <Route path="/help" element={<HelpPage />} />
-      <Route path="/help/resources" element={<ResourcePage />} />
-      <Route path="/help/faq" element={<FAQPage />} />
-      <Route path="/help/feedback" element={<FeedbackPage />} />
-      {/* Catches /help/handbooks, /help/bharat-bhoomi, /help/mythbusters,
-          /help/videos — React Router always matches the static routes
-          above first, so this never shadows /help/faq or /help/feedback. */}
-      <Route path="/help/:slug" element={<ResourcePage />} />
-      <Route path="/about/:slug" element={<AboutDetailPage />} />
-    </Routes>
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/help/resources" element={<ResourcePage />} />
+        <Route path="/help/faq" element={<FAQPage />} />
+        <Route path="/help/feedback" element={<FeedbackPage />} />
+        {/* Catches /help/handbooks, /help/bharat-bhoomi, /help/mythbusters,
+            /help/videos — React Router always matches the static routes
+            above first, so this never shadows /help/faq or /help/feedback. */}
+        <Route path="/help/:slug" element={<ResourcePage />} />
+        <Route path="/about/:slug" element={<AboutDetailPage />} />
+        <Route path="/features" element={<FeaturesPage />} />
+      </Routes>
+    </>
   );
 }
 

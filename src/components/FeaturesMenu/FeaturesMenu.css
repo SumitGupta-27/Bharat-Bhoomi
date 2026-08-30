@@ -1,0 +1,194 @@
+/* ============================================================
+   FEATURES MENU — navbar trigger + hover dropdown
+   Self-contained: reuses design tokens from src/App.css, and the same
+   icon-chip color palette already used by .feature-card__icon--* in
+   the homepage Features section (Features.jsx / App.css).
+============================================================ */
+
+.features-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.features-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 6px 2px;
+  transition: color 0.15s ease;
+}
+.features-menu__trigger:hover,
+.features-menu__trigger:focus-visible {
+  color: var(--color-text-primary);
+}
+.features-menu__trigger--active {
+  color: var(--color-blue-600);
+  font-weight: 600;
+}
+
+.features-menu__caret {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+.features-menu__caret--open {
+  transform: rotate(180deg);
+}
+
+/* ---- Panel ---- */
+.features-menu__panel {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  z-index: 150;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  animation: features-menu-in 0.18s ease;
+}
+
+@keyframes features-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .features-menu__panel {
+    animation: none;
+  }
+}
+
+.features-menu__panel-inner {
+  padding-block: 26px 18px;
+}
+
+.features-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 24px;
+}
+
+.features-menu__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 10px;
+  border-radius: var(--radius-md);
+  transition: background-color 0.15s ease;
+}
+.features-menu__item:hover,
+.features-menu__item:focus-visible {
+  background: var(--color-bg);
+}
+
+.features-menu__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.features-menu__item-icon svg {
+  width: 18px;
+  height: 18px;
+}
+/* Same palette as .feature-card__icon--* on the homepage Features section */
+.features-menu__item-icon--blue {
+  background: #e4edfc;
+  color: #2b62d1;
+}
+.features-menu__item-icon--indigo {
+  background: #eae6fb;
+  color: #6c4fd1;
+}
+.features-menu__item-icon--green {
+  background: var(--color-green-50);
+  color: var(--color-green-500);
+}
+.features-menu__item-icon--amber {
+  background: #fdf1e0;
+  color: #cc8a1f;
+}
+.features-menu__item-icon--teal {
+  background: #e1f3f0;
+  color: #1f9587;
+}
+
+.features-menu__item-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-top: 2px;
+}
+.features-menu__item-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+.features-menu__item-desc {
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.features-menu__footer {
+  border-top: 1px solid var(--color-border);
+  margin-top: 16px;
+  padding-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+.features-menu__footer-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-blue-600);
+}
+.features-menu__footer-link:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   RESPONSIVE — Features menu
+============================================================ */
+@media (max-width: 900px) {
+  .features-menu {
+    width: 100%;
+  }
+  .features-menu__trigger {
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px 2px;
+  }
+  .features-menu__panel {
+    position: static;
+    box-shadow: none;
+    border-bottom: none;
+    border-top: 1px solid var(--color-border);
+    margin-top: 8px;
+    animation: none;
+  }
+  .features-menu__panel-inner {
+    padding-block: 12px 4px;
+  }
+  .features-menu__grid {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .features-menu__footer {
+    justify-content: flex-start;
+  }
+}

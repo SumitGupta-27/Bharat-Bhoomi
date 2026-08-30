@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import HelpMenu from "./HelpMenu/HelpMenu.jsx";
 import AboutMenu from "./AboutMenu/AboutMenu.jsx";
+import FeaturesMenu from "./FeaturesMenu/FeaturesMenu.jsx";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -51,7 +52,7 @@ function Navbar() {
           </Link>
 
           <AboutMenu />
-          <a href="#features">Features</a>
+          <FeaturesMenu />
           <a href="#dashboard">Dashboard</a>
 
           <HelpMenu />
