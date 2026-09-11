@@ -53,7 +53,7 @@ function Navbar() {
 
           <AboutMenu />
           <FeaturesMenu />
-          <a href="#dashboard">Dashboard</a>
+          <Link to="/dashboard">Dashboard</Link>
 
           <HelpMenu />
         </nav>

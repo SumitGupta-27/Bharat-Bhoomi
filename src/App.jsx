@@ -12,6 +12,7 @@ import FAQPage from "./pages/FAQPage.jsx";
 import FeedbackPage from "./pages/FeedbackPage.jsx";
 import AboutDetailPage from "./pages/AboutDetailPage.jsx";
 import FeaturesPage from "./pages/FeaturesPage.jsx";
+import DashboardPage from "./pages/DashboardPage.jsx";
 
 
 function Home() {
@@ -47,6 +48,7 @@ function App() {
         <Route path="/help/:slug" element={<ResourcePage />} />
         <Route path="/about/:slug" element={<AboutDetailPage />} />
         <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
       </Routes>
     </>
   );
