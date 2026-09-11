@@ -64,11 +64,9 @@ function Navbar() {
           <AboutMenu />
           <FeaturesMenu />
 
-          {isOfficer && (
-            <Link to="/dashboard">
-              Officer Dashboard
-            </Link>
-          )}
+          <Link to="/dashboard">
+            {isOfficer ? "Officer Dashboard" : "Dashboard"}
+          </Link>
 
           <HelpMenu />
         </nav>

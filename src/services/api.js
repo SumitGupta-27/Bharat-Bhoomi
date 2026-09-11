@@ -1,6 +1,6 @@
-// Centralized API client for Bharat Bhoomi backend
+// Read environment variable on Vercel/Render, fallback to /api proxy locally
+const API_BASE = (import.meta.env.VITE_API_URL || "/api").replace(/\/$/, "");
 
-const API_BASE = "/api";
 
 function getHeaders(includeAuth = true) {
   const headers = {
