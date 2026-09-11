@@ -78,9 +78,9 @@ function Hero() {
             </li>
           </ul>
 
-          <div className="hero__cta">
-            <button className="btn btn--primary" type="button">
-              Explore Map
+          <div className="hero__cta" style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            <a className="btn btn--primary" href="/search">
+              Explore Land Records
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -91,7 +91,10 @@ function Hero() {
               >
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
-            </button>
+            </a>
+            <a className="btn btn--outline" href="/help/feedback">
+              File Grievance
+            </a>
           </div>
         </div>
 
