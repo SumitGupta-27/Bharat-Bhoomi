@@ -1,21 +1,28 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HelpMenu from "./HelpMenu/HelpMenu.jsx";
 import AboutMenu from "./AboutMenu/AboutMenu.jsx";
 import FeaturesMenu from "./FeaturesMenu/FeaturesMenu.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout, isOfficer } = useAuth();
+  const navigate = useNavigate();
 
   function toggleMenu() {
     setIsMenuOpen((prevState) => !prevState);
   }
 
+  function handleLogout() {
+    logout();
+    navigate("/");
+  }
+
   return (
     <header className="navbar">
       <div className="container navbar__inner">
-
-        {/* Brand now correctly goes to Home */}
+        {/* Brand */}
         <Link
           to="/"
           className="brand"
@@ -46,25 +53,54 @@ function Navbar() {
           }`}
           aria-label="Primary"
         >
-          {/* Fixed Home button */}
           <Link to="/">
             Home
           </Link>
 
+          <Link to="/search">
+            Land Search &amp; RoR
+          </Link>
+
           <AboutMenu />
           <FeaturesMenu />
-          <Link to="/dashboard">Dashboard</Link>
+
+          {isOfficer && (
+            <Link to="/dashboard">
+              Officer Dashboard
+            </Link>
+          )}
 
           <HelpMenu />
         </nav>
 
         <div className="nav-actions">
-          <Link
-            className="btn btn--primary btn--sm"
-            to="/login"
-          >
-            Login
-          </Link>
+          {isAuthenticated ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0f2038" }}>
+                  {user.full_name}
+                </span>
+                <span style={{ fontSize: "0.72rem", color: "#64748b" }}>
+                  {user.role === "officer" ? (user.department || "Officer") : "Citizen"}
+                </span>
+              </div>
+              <button
+                type="button"
+                className="btn btn--outline btn--sm"
+                onClick={handleLogout}
+                style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              className="btn btn--primary btn--sm"
+              to="/login"
+            >
+              Login
+            </Link>
+          )}
 
           <button
             className="nav-toggle"

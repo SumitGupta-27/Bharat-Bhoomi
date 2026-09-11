@@ -1,23 +1,19 @@
+import { useNavigate } from "react-router-dom";
 import { SVGMap } from "react-svg-map";
 import "react-svg-map/lib/index.css";
 import India from "@svg-maps/india";
 
-// Real, geographically accurate map data for all 28 states + 8 union
+// Geographically accurate map data for all 28 states + 8 union
 // territories of India, from the @svg-maps/india package
-// (map data licensed CC BY 4.0, original source: mapsvg.com/maps/india).
-
 function IndiaMap() {
+  const navigate = useNavigate();
+
   // Runs whenever a state/UT is clicked.
-  // react-svg-map sets the location's "name" and "id" as real attributes
-  // on the clicked <path>, so we can read them straight off the event.
   function handleStateClick(event) {
-    const stateName = event.target.attributes.name.value;
-    const stateId = event.target.attributes.id.value;
-
-    console.log("Selected state:", stateName);
-
-    // Later, once React Router is set up, navigate from here, e.g.:
-    // navigate(`/land-records/${stateId}`);
+    const stateName = event.target.attributes.name?.value;
+    if (stateName) {
+      navigate(`/search?state=${encodeURIComponent(stateName)}`);
+    }
   }
 
   return (
@@ -44,7 +40,7 @@ function IndiaMap() {
           </svg>
         </span>
         <p>
-          <strong>Click on a State</strong>to access Land Records
+          <strong>Click on a State</strong> to search Land Records
         </p>
       </div>
     </div>
