@@ -44,6 +44,17 @@ app.use("/api/stats", statsRoutes);
 app.use("/api/audit-logs", auditRoutes);
 app.use("/api/users", usersRoutes);
 
+// Serve frontend static build in production (e.g. Render all-in-one deployment)
+import fs from "fs";
+const distPath = path.join(__dirname, "../dist");
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) return next();
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+}
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);

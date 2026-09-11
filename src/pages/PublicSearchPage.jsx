@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import api from "../services/api.js";
 import "./PublicSearchPage.css";
 
@@ -30,6 +31,8 @@ const LAND_TYPES = [
 
 export default function PublicSearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { user } = useAuth();
+
   const initialQuery = searchParams.get("q") || "";
   const initialState = searchParams.get("state") || "All States";
 
@@ -43,17 +46,29 @@ export default function PublicSearchPage() {
   const [parcelDetailLoading, setParcelDetailLoading] = useState(false);
   const [mutations, setMutations] = useState([]);
 
+  // Sync with URL parameters
+  useEffect(() => {
+    const stateParam = searchParams.get("state");
+    const qParam = searchParams.get("q");
+    if (stateParam && stateParam !== selectedState) {
+      setSelectedState(stateParam);
+    }
+    if (qParam !== null && qParam !== undefined && qParam !== query) {
+      setQuery(qParam);
+    }
+  }, [searchParams]);
+
   // Fetch parcels whenever search criteria change
   useEffect(() => {
-    fetchParcels();
+    fetchParcels(query, selectedState);
   }, [selectedState, selectedType]);
 
-  async function fetchParcels(searchQ = query) {
+  async function fetchParcels(searchQ = query, stateToUse = selectedState) {
     setLoading(true);
     try {
       const data = await api.getParcels({
         query: searchQ,
-        state: selectedState !== "All States" ? selectedState : undefined,
+        state: stateToUse !== "All States" ? stateToUse : undefined,
         land_type: selectedType !== "All Types" ? selectedType : undefined,
         limit: 50,
       });
