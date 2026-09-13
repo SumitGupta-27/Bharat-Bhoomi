@@ -50,6 +50,18 @@ export const api = {
     return handleResponse(res);
   },
 
+  async logout() {
+    try {
+      await fetch(`${API_BASE}/auth/logout`, {
+        method: "POST",
+        headers: getHeaders(true),
+      });
+    } catch (_) {
+      // Non-critical — still clear client-side token
+    }
+    localStorage.removeItem("bharat_bhoomi_token");
+  },
+
   // Land Parcels & RoR
   async getParcels(params = {}) {
     const query = new URLSearchParams();

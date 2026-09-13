@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-=======
 import { useAuth } from "../context/AuthContext.jsx";
->>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
 import "./LoginPage.css";
 
 const DEPARTMENTS = [
@@ -16,6 +13,8 @@ const DEPARTMENTS = [
   "District Collector Office",
   "Tehsildar / Sub-Registrar Office",
 ];
+
+// ── Icon Components ────────────────────────────────────────────────────────────
 
 function IconBuilding() {
   return (
@@ -33,6 +32,23 @@ function IconUser() {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21a8 8 0 0 0-16 0" />
       <circle cx="12" cy="8" r="4" />
+    </svg>
+  );
+}
+
+function IconMail() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
+  );
+}
+
+function IconPhone() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 17.18z" />
     </svg>
   );
 }
@@ -69,188 +85,166 @@ function IconLoginGlyph() {
   );
 }
 
-function LoginPage() {
-<<<<<<< HEAD
-  const navigate = useNavigate();
+function IconCheck() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
 
-  const [activeTab, setActiveTab] = useState("login");
-=======
+// ── Password Strength Helper ───────────────────────────────────────────────────
+
+function getPasswordStrength(password) {
+  if (!password) return { score: 0, label: "", color: "" };
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 1) return { score, label: "Weak", color: "#ef4444" };
+  if (score <= 2) return { score, label: "Fair", color: "#f59e0b" };
+  if (score <= 3) return { score, label: "Good", color: "#3b82f6" };
+  return { score, label: "Strong", color: "#22c55e" };
+}
+
+// ── Main Component ─────────────────────────────────────────────────────────────
+
+function LoginPage() {
   const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("login"); // 'login' | 'department' | 'register'
->>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
   const [showPassword, setShowPassword] = useState(false);
   const [showDeptPassword, setShowDeptPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-<<<<<<< HEAD
-  // Citizen login state
+  // ── Citizen Login State ──
+  const [citizenUser, setCitizenUser] = useState("");
+  const [citizenPass, setCitizenPass] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
-  // Department login state
+  // ── Officer Login State ──
+  const [deptName, setDeptName] = useState("Revenue Department");
+  const [officerUser, setOfficerUser] = useState("");
+  const [officerPass, setOfficerPass] = useState("");
   const [deptError, setDeptError] = useState("");
   const [deptLoading, setDeptLoading] = useState(false);
 
-  // ── Citizen login ─────────────────────────────────────────────────────────
+  // ── Register State ──
+  const [regFullName, setRegFullName] = useState("");
+  const [regUsername, setRegUsername] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPhone, setRegPhone] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const [regConfirmPassword, setRegConfirmPassword] = useState("");
+  const [regError, setRegError] = useState("");
+  const [regLoading, setRegLoading] = useState(false);
+  const [regSuccess, setRegSuccess] = useState(false);
+
+  const pwdStrength = getPasswordStrength(regPassword);
+
+  // ── Tab Switch Helper ──────────────────────────────────────────────────────
+  function switchTab(tab) {
+    setActiveTab(tab);
+    setLoginError("");
+    setDeptError("");
+    setRegError("");
+    setRegSuccess(false);
+  }
+
+  // ── Citizen Login ──────────────────────────────────────────────────────────
   async function handleLoginSubmit(event) {
     event.preventDefault();
     setLoginError("");
 
-    const form = event.currentTarget;
-    const username = form.username.value.trim();
-    const password = form.password.value;
-
-    if (!username || !password) {
-      setLoginError("Please enter your username/email and password.");
+    if (!citizenUser.trim() || !citizenPass) {
+      setLoginError("Please enter your username / email and password.");
       return;
     }
 
     setLoginLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setLoginError(data.message || "Login failed. Please try again.");
-        return;
-      }
-
-      // Persist token + user info
-      localStorage.setItem("bb_token", data.token);
-      localStorage.setItem("bb_user", JSON.stringify(data.user));
-
-      navigate("/dashboard");
-    } catch {
-      setLoginError("Could not reach the server. Please try again later.");
+      await login({ username: citizenUser.trim(), password: citizenPass, role: "citizen" });
+      navigate("/search");
+    } catch (err) {
+      setLoginError(err.message || "Login failed. Please try again.");
     } finally {
       setLoginLoading(false);
     }
   }
 
-  // ── Department / Officer login ────────────────────────────────────────────
+  // ── Officer / Department Login ─────────────────────────────────────────────
   async function handleDeptSubmit(event) {
     event.preventDefault();
     setDeptError("");
 
-    const form = event.currentTarget;
-    const department = form.department.value;
-    const username = form["dept-username"].value.trim();
-    const password = form["dept-password"].value;
-
-    if (!department || !username || !password) {
+    if (!deptName || !officerUser.trim() || !officerPass) {
       setDeptError("Please fill in all fields.");
       return;
     }
 
     setDeptLoading(true);
     try {
-      const res = await fetch("/api/auth/department-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ department, username, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setDeptError(data.message || "Login failed. Please try again.");
-        return;
-      }
-
-      // Persist token + officer info
-      localStorage.setItem("bb_token", data.token);
-      localStorage.setItem("bb_user", JSON.stringify(data.user));
-
-      navigate("/dashboard");
-    } catch {
-      setDeptError("Could not reach the server. Please try again later.");
-    } finally {
-      setDeptLoading(false);
-=======
-  // Citizen Login Form State
-  const [citizenUser, setCitizenUser] = useState("");
-  const [citizenPass, setCitizenPass] = useState("");
-
-  // Officer Login Form State
-  const [deptName, setDeptName] = useState("Revenue Department");
-  const [officerUser, setOfficerUser] = useState("");
-  const [officerPass, setOfficerPass] = useState("");
-
-  // Register Form State
-  const [regFullName, setRegFullName] = useState("");
-  const [regUsername, setRegUsername] = useState("");
-  const [regEmail, setRegEmail] = useState("");
-  const [regPhone, setRegPhone] = useState("");
-  const [regPassword, setRegPassword] = useState("");
-
-  async function handleCitizenSubmit(event) {
-    event.preventDefault();
-    setErrorMessage("");
-    setLoading(true);
-    try {
       await login({
-        username: citizenUser,
-        password: citizenPass,
-        role: "citizen",
-      });
-      navigate("/search");
-    } catch (err) {
-      setErrorMessage(err.message || "Failed to login.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleOfficerSubmit(event) {
-    event.preventDefault();
-    setErrorMessage("");
-    setLoading(true);
-    try {
-      await login({
-        username: officerUser,
+        username: officerUser.trim(),
         password: officerPass,
         department: deptName,
         role: "officer",
       });
       navigate("/dashboard");
     } catch (err) {
-      setErrorMessage(err.message || "Failed to login.");
+      setDeptError(err.message || "Login failed. Please try again.");
     } finally {
-      setLoading(false);
+      setDeptLoading(false);
     }
   }
 
+  // ── Register ───────────────────────────────────────────────────────────────
   async function handleRegisterSubmit(event) {
     event.preventDefault();
-    setErrorMessage("");
-    setLoading(true);
+    setRegError("");
+
+    if (!regFullName.trim() || !regUsername.trim() || !regEmail.trim() || !regPassword) {
+      setRegError("Full name, username, email, and password are required.");
+      return;
+    }
+    if (regPassword !== regConfirmPassword) {
+      setRegError("Passwords do not match.");
+      return;
+    }
+    if (regPassword.length < 8) {
+      setRegError("Password must be at least 8 characters long.");
+      return;
+    }
+
+    setRegLoading(true);
     try {
       await register({
-        full_name: regFullName,
-        username: regUsername,
-        email: regEmail,
-        phone: regPhone,
+        full_name: regFullName.trim(),
+        username: regUsername.trim(),
+        email: regEmail.trim(),
+        phone: regPhone.trim() || undefined,
         password: regPassword,
       });
-      navigate("/search");
+      setRegSuccess(true);
+      // Brief success screen, then redirect
+      setTimeout(() => navigate("/search"), 1800);
     } catch (err) {
-      setErrorMessage(err.message || "Registration failed.");
+      setRegError(err.message || "Registration failed. Please try again.");
     } finally {
-      setLoading(false);
+      setRegLoading(false);
     }
   }
 
-  // Quick Demo Autofills
+  // ── Quick Demo Autofills ───────────────────────────────────────────────────
   function fillDemo(type) {
-    setErrorMessage("");
+    setLoginError("");
+    setDeptError("");
     if (type === "revenue") {
       setActiveTab("department");
       setDeptName("Revenue Department");
@@ -265,10 +259,10 @@ function LoginPage() {
       setActiveTab("login");
       setCitizenUser("citizen.rahul");
       setCitizenPass("Password123!");
->>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
     }
   }
 
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="login-page">
       <div className="login-page__bg" aria-hidden="true" />
@@ -295,13 +289,14 @@ function LoginPage() {
         </div>
 
         <div className="login-card">
+          {/* Tabs */}
           <div className="login-card__tabs" role="tablist">
             <button
               type="button"
               role="tab"
               aria-selected={activeTab === "login"}
               className={`login-card__tab ${activeTab === "login" ? "login-card__tab--active" : ""}`}
-              onClick={() => { setActiveTab("login"); setErrorMessage(""); }}
+              onClick={() => switchTab("login")}
             >
               Citizen Login
             </button>
@@ -310,37 +305,28 @@ function LoginPage() {
               role="tab"
               aria-selected={activeTab === "department"}
               className={`login-card__tab ${activeTab === "department" ? "login-card__tab--active" : ""}`}
-              onClick={() => { setActiveTab("department"); setErrorMessage(""); }}
+              onClick={() => switchTab("department")}
             >
-              Department / Officer Login
+              Officer Login
             </button>
             <button
               type="button"
               role="tab"
               aria-selected={activeTab === "register"}
               className={`login-card__tab ${activeTab === "register" ? "login-card__tab--active" : ""}`}
-              onClick={() => { setActiveTab("register"); setErrorMessage(""); }}
+              onClick={() => switchTab("register")}
             >
               Register
             </button>
           </div>
 
-          {errorMessage && (
-            <div className="login-error-alert" role="alert">
-              ⚠️ {errorMessage}
-            </div>
-          )}
-
-<<<<<<< HEAD
-              <form className="login-form" onSubmit={handleLoginSubmit}>
-=======
+          {/* ── Citizen Login Tab ── */}
           {activeTab === "login" && (
             <div className="login-card__body">
-              <h2 className="login-card__heading">Citizen Login</h2>
+              <h2 className="login-card__heading">Welcome Back</h2>
               <p className="login-card__lead">Access your land records, certificates, and grievances</p>
 
-              <form className="login-form" onSubmit={handleCitizenSubmit}>
->>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
+              <form className="login-form" onSubmit={handleLoginSubmit} noValidate>
                 <label className="field" htmlFor="login-username">
                   <span className="field__label">Username or Email ID</span>
                   <span className="field__control">
@@ -349,7 +335,7 @@ function LoginPage() {
                       id="login-username"
                       name="username"
                       type="text"
-                      placeholder="Enter Username or Email ID"
+                      placeholder="Enter username or email"
                       value={citizenUser}
                       onChange={(e) => setCitizenUser(e.target.value)}
                       required
@@ -366,7 +352,7 @@ function LoginPage() {
                       id="login-password"
                       name="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter Password"
+                      placeholder="Enter password"
                       value={citizenPass}
                       onChange={(e) => setCitizenPass(e.target.value)}
                       required
@@ -383,7 +369,6 @@ function LoginPage() {
                   </span>
                 </label>
 
-<<<<<<< HEAD
                 {loginError && (
                   <p className="login-form__error" role="alert">{loginError}</p>
                 )}
@@ -395,11 +380,6 @@ function LoginPage() {
                 <button className="btn btn--primary btn--block" type="submit" disabled={loginLoading}>
                   <IconLoginGlyph />
                   {loginLoading ? "Logging in…" : "Login"}
-=======
-                <button className="btn btn--primary btn--block" type="submit" disabled={loading}>
-                  <IconLoginGlyph />
-                  {loading ? "Authenticating..." : "Login"}
->>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
                 </button>
               </form>
 
@@ -410,7 +390,7 @@ function LoginPage() {
                 <button
                   type="button"
                   className="link-button"
-                  onClick={() => { setActiveTab("register"); setErrorMessage(""); }}
+                  onClick={() => switchTab("register")}
                 >
                   Create Account
                 </button>
@@ -418,16 +398,13 @@ function LoginPage() {
             </div>
           )}
 
+          {/* ── Officer Login Tab ── */}
           {activeTab === "department" && (
             <div className="login-card__body">
               <h2 className="login-card__heading">Department / Officer Login</h2>
               <p className="login-card__lead">Authorized portal for Revenue, Registration &amp; Survey Officers</p>
 
-<<<<<<< HEAD
-              <form className="login-form" onSubmit={handleDeptSubmit}>
-=======
-              <form className="login-form" onSubmit={handleOfficerSubmit}>
->>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
+              <form className="login-form" onSubmit={handleDeptSubmit} noValidate>
                 <label className="field" htmlFor="dept-select">
                   <span className="field__label">Select Department</span>
                   <span className="field__control">
@@ -453,7 +430,7 @@ function LoginPage() {
                       id="dept-username"
                       name="dept-username"
                       type="text"
-                      placeholder="Enter Username (e.g. officer.revenue)"
+                      placeholder="e.g. officer.revenue"
                       value={officerUser}
                       onChange={(e) => setOfficerUser(e.target.value)}
                       required
@@ -470,7 +447,7 @@ function LoginPage() {
                       id="dept-password"
                       name="dept-password"
                       type={showDeptPassword ? "text" : "password"}
-                      placeholder="Enter Password"
+                      placeholder="Enter password"
                       value={officerPass}
                       onChange={(e) => setOfficerPass(e.target.value)}
                       required
@@ -487,7 +464,6 @@ function LoginPage() {
                   </span>
                 </label>
 
-<<<<<<< HEAD
                 {deptError && (
                   <p className="login-form__error" role="alert">{deptError}</p>
                 )}
@@ -498,114 +474,193 @@ function LoginPage() {
 
                 <button className="btn btn--primary btn--block" type="submit" disabled={deptLoading}>
                   <IconLoginGlyph />
-                  {deptLoading ? "Logging in…" : "Login"}
-=======
-                <button className="btn btn--primary btn--block" type="submit" disabled={loading}>
-                  <IconLoginGlyph />
-                  {loading ? "Authenticating Officer..." : "Login to Officer Portal"}
+                  {deptLoading ? "Authenticating Officer…" : "Login to Officer Portal"}
                 </button>
               </form>
             </div>
           )}
 
+          {/* ── Register Tab ── */}
           {activeTab === "register" && (
             <div className="login-card__body">
-              <h2 className="login-card__heading">Citizen Registration</h2>
-              <p className="login-card__lead">Create an account to track records and register grievances</p>
+              {regSuccess ? (
+                <div className="register-success">
+                  <div className="register-success__icon">
+                    <IconCheck />
+                  </div>
+                  <h2 className="register-success__title">Account Created!</h2>
+                  <p className="register-success__text">
+                    Welcome to Bharat Bhoomi. Redirecting you to the portal…
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <h2 className="login-card__heading">Create Your Account</h2>
+                  <p className="login-card__lead">Register to track land records and file grievances</p>
 
-              <form className="login-form" onSubmit={handleRegisterSubmit}>
-                <label className="field" htmlFor="reg-name">
-                  <span className="field__label">Full Name</span>
-                  <span className="field__control">
-                    <span className="field__icon" aria-hidden="true"><IconUser /></span>
-                    <input
-                      id="reg-name"
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={regFullName}
-                      onChange={(e) => setRegFullName(e.target.value)}
-                      required
-                    />
-                  </span>
-                </label>
+                  <form className="login-form" onSubmit={handleRegisterSubmit} noValidate>
+                    <label className="field" htmlFor="reg-name">
+                      <span className="field__label">Full Name</span>
+                      <span className="field__control">
+                        <span className="field__icon" aria-hidden="true"><IconUser /></span>
+                        <input
+                          id="reg-name"
+                          type="text"
+                          placeholder="Enter your full name"
+                          value={regFullName}
+                          onChange={(e) => setRegFullName(e.target.value)}
+                          required
+                          autoComplete="name"
+                        />
+                      </span>
+                    </label>
 
-                <label className="field" htmlFor="reg-username">
-                  <span className="field__label">Choose Username</span>
-                  <span className="field__control">
-                    <span className="field__icon" aria-hidden="true"><IconUser /></span>
-                    <input
-                      id="reg-username"
-                      type="text"
-                      placeholder="Choose a username"
-                      value={regUsername}
-                      onChange={(e) => setRegUsername(e.target.value)}
-                      required
-                    />
-                  </span>
-                </label>
+                    <label className="field" htmlFor="reg-username">
+                      <span className="field__label">Choose Username</span>
+                      <span className="field__control">
+                        <span className="field__icon" aria-hidden="true"><IconUser /></span>
+                        <input
+                          id="reg-username"
+                          type="text"
+                          placeholder="Unique username (e.g. rahul.sharma)"
+                          value={regUsername}
+                          onChange={(e) => setRegUsername(e.target.value)}
+                          required
+                          autoComplete="username"
+                        />
+                      </span>
+                    </label>
 
-                <label className="field" htmlFor="reg-email">
-                  <span className="field__label">Email Address</span>
-                  <span className="field__control">
-                    <span className="field__icon" aria-hidden="true">✉️</span>
-                    <input
-                      id="reg-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      required
-                    />
-                  </span>
-                </label>
+                    <label className="field" htmlFor="reg-email">
+                      <span className="field__label">Email Address</span>
+                      <span className="field__control">
+                        <span className="field__icon" aria-hidden="true"><IconMail /></span>
+                        <input
+                          id="reg-email"
+                          type="email"
+                          placeholder="you@example.com"
+                          value={regEmail}
+                          onChange={(e) => setRegEmail(e.target.value)}
+                          required
+                          autoComplete="email"
+                        />
+                      </span>
+                    </label>
 
-                <label className="field" htmlFor="reg-phone">
-                  <span className="field__label">Mobile Phone (Optional)</span>
-                  <span className="field__control">
-                    <span className="field__icon" aria-hidden="true">📱</span>
-                    <input
-                      id="reg-phone"
-                      type="tel"
-                      placeholder="+91 98765 43210"
-                      value={regPhone}
-                      onChange={(e) => setRegPhone(e.target.value)}
-                    />
-                  </span>
-                </label>
+                    <label className="field" htmlFor="reg-phone">
+                      <span className="field__label">Mobile Phone <span className="field__label--optional">(optional)</span></span>
+                      <span className="field__control">
+                        <span className="field__icon" aria-hidden="true"><IconPhone /></span>
+                        <input
+                          id="reg-phone"
+                          type="tel"
+                          placeholder="+91 98765 43210"
+                          value={regPhone}
+                          onChange={(e) => setRegPhone(e.target.value)}
+                          autoComplete="tel"
+                        />
+                      </span>
+                    </label>
 
-                <label className="field" htmlFor="reg-password">
-                  <span className="field__label">Password</span>
-                  <span className="field__control">
-                    <span className="field__icon" aria-hidden="true"><IconLock /></span>
-                    <input
-                      id="reg-password"
-                      type="password"
-                      placeholder="Create a strong password"
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
-                      required
-                    />
-                  </span>
-                </label>
+                    <label className="field" htmlFor="reg-password">
+                      <span className="field__label">Password</span>
+                      <span className="field__control">
+                        <span className="field__icon" aria-hidden="true"><IconLock /></span>
+                        <input
+                          id="reg-password"
+                          type={showRegPassword ? "text" : "password"}
+                          placeholder="Min. 8 characters"
+                          value={regPassword}
+                          onChange={(e) => setRegPassword(e.target.value)}
+                          required
+                          autoComplete="new-password"
+                        />
+                        <button
+                          type="button"
+                          className="field__toggle"
+                          aria-label={showRegPassword ? "Hide password" : "Show password"}
+                          onClick={() => setShowRegPassword((prev) => !prev)}
+                        >
+                          <IconEye open={showRegPassword} />
+                        </button>
+                      </span>
+                      {regPassword && (
+                        <div className="pwd-strength">
+                          <div className="pwd-strength__bars">
+                            {[1, 2, 3, 4].map((n) => (
+                              <div
+                                key={n}
+                                className="pwd-strength__bar"
+                                style={{
+                                  background: pwdStrength.score >= n ? pwdStrength.color : "var(--color-border)",
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <span className="pwd-strength__label" style={{ color: pwdStrength.color }}>
+                            {pwdStrength.label}
+                          </span>
+                        </div>
+                      )}
+                    </label>
 
-                <button className="btn btn--primary btn--block" type="submit" disabled={loading}>
-                  {loading ? "Creating Account..." : "Create Account"}
->>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
-                </button>
-              </form>
+                    <label className="field" htmlFor="reg-confirm">
+                      <span className="field__label">Confirm Password</span>
+                      <span className="field__control">
+                        <span className="field__icon" aria-hidden="true"><IconLock /></span>
+                        <input
+                          id="reg-confirm"
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Re-enter your password"
+                          value={regConfirmPassword}
+                          onChange={(e) => setRegConfirmPassword(e.target.value)}
+                          required
+                          autoComplete="new-password"
+                        />
+                        <button
+                          type="button"
+                          className="field__toggle"
+                          aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                          onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        >
+                          <IconEye open={showConfirmPassword} />
+                        </button>
+                      </span>
+                      {regConfirmPassword && regPassword !== regConfirmPassword && (
+                        <span className="field__hint field__hint--error">Passwords do not match</span>
+                      )}
+                      {regConfirmPassword && regPassword === regConfirmPassword && regConfirmPassword.length > 0 && (
+                        <span className="field__hint field__hint--ok">✓ Passwords match</span>
+                      )}
+                    </label>
 
-              <div className="login-card__divider" />
+                    {regError && (
+                      <p className="login-form__error" role="alert">{regError}</p>
+                    )}
 
-              <p className="login-card__footer">
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  className="link-button"
-                  onClick={() => { setActiveTab("login"); setErrorMessage(""); }}
-                >
-                  Back to Login
-                </button>
-              </p>
+                    <button
+                      className="btn btn--primary btn--block"
+                      type="submit"
+                      disabled={regLoading}
+                    >
+                      {regLoading ? "Creating Account…" : "Create Account"}
+                    </button>
+                  </form>
+
+                  <div className="login-card__divider" />
+
+                  <p className="login-card__footer">
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      className="link-button"
+                      onClick={() => switchTab("login")}
+                    >
+                      Back to Login
+                    </button>
+                  </p>
+                </>
+              )}
             </div>
           )}
         </div>
