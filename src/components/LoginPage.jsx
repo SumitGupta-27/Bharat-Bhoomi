@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+<<<<<<< HEAD
+=======
+import { useAuth } from "../context/AuthContext.jsx";
+>>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
 import "./LoginPage.css";
 
 const DEPARTMENTS = [
@@ -66,12 +70,22 @@ function IconLoginGlyph() {
 }
 
 function LoginPage() {
+<<<<<<< HEAD
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("login");
+=======
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
+
+  const [activeTab, setActiveTab] = useState("login"); // 'login' | 'department' | 'register'
+>>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
   const [showPassword, setShowPassword] = useState(false);
   const [showDeptPassword, setShowDeptPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
+<<<<<<< HEAD
   // Citizen login state
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
@@ -160,6 +174,98 @@ function LoginPage() {
       setDeptError("Could not reach the server. Please try again later.");
     } finally {
       setDeptLoading(false);
+=======
+  // Citizen Login Form State
+  const [citizenUser, setCitizenUser] = useState("");
+  const [citizenPass, setCitizenPass] = useState("");
+
+  // Officer Login Form State
+  const [deptName, setDeptName] = useState("Revenue Department");
+  const [officerUser, setOfficerUser] = useState("");
+  const [officerPass, setOfficerPass] = useState("");
+
+  // Register Form State
+  const [regFullName, setRegFullName] = useState("");
+  const [regUsername, setRegUsername] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPhone, setRegPhone] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+
+  async function handleCitizenSubmit(event) {
+    event.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+    try {
+      await login({
+        username: citizenUser,
+        password: citizenPass,
+        role: "citizen",
+      });
+      navigate("/search");
+    } catch (err) {
+      setErrorMessage(err.message || "Failed to login.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleOfficerSubmit(event) {
+    event.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+    try {
+      await login({
+        username: officerUser,
+        password: officerPass,
+        department: deptName,
+        role: "officer",
+      });
+      navigate("/dashboard");
+    } catch (err) {
+      setErrorMessage(err.message || "Failed to login.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRegisterSubmit(event) {
+    event.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+    try {
+      await register({
+        full_name: regFullName,
+        username: regUsername,
+        email: regEmail,
+        phone: regPhone,
+        password: regPassword,
+      });
+      navigate("/search");
+    } catch (err) {
+      setErrorMessage(err.message || "Registration failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Quick Demo Autofills
+  function fillDemo(type) {
+    setErrorMessage("");
+    if (type === "revenue") {
+      setActiveTab("department");
+      setDeptName("Revenue Department");
+      setOfficerUser("officer.revenue");
+      setOfficerPass("Password123!");
+    } else if (type === "survey") {
+      setActiveTab("department");
+      setDeptName("Survey & Settlement Department");
+      setOfficerUser("officer.survey");
+      setOfficerPass("Password123!");
+    } else if (type === "citizen") {
+      setActiveTab("login");
+      setCitizenUser("citizen.rahul");
+      setCitizenPass("Password123!");
+>>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
     }
   }
 
@@ -174,6 +280,20 @@ function LoginPage() {
           <p className="login-page__subtitle">National Land Records &amp; Governance Portal</p>
         </div>
 
+        {/* Demo Account Pills */}
+        <div className="demo-accounts-bar">
+          <span className="demo-label">⚡ Quick Demo Logins:</span>
+          <button type="button" className="demo-pill" onClick={() => fillDemo("revenue")}>
+            Revenue Officer (SDM)
+          </button>
+          <button type="button" className="demo-pill" onClick={() => fillDemo("survey")}>
+            Survey Officer
+          </button>
+          <button type="button" className="demo-pill" onClick={() => fillDemo("citizen")}>
+            Citizen (Rahul)
+          </button>
+        </div>
+
         <div className="login-card">
           <div className="login-card__tabs" role="tablist">
             <button
@@ -181,32 +301,60 @@ function LoginPage() {
               role="tab"
               aria-selected={activeTab === "login"}
               className={`login-card__tab ${activeTab === "login" ? "login-card__tab--active" : ""}`}
-              onClick={() => setActiveTab("login")}
+              onClick={() => { setActiveTab("login"); setErrorMessage(""); }}
             >
-              Login
+              Citizen Login
             </button>
             <button
               type="button"
               role="tab"
               aria-selected={activeTab === "department"}
               className={`login-card__tab ${activeTab === "department" ? "login-card__tab--active" : ""}`}
-              onClick={() => setActiveTab("department")}
+              onClick={() => { setActiveTab("department"); setErrorMessage(""); }}
             >
               Department / Officer Login
             </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "register"}
+              className={`login-card__tab ${activeTab === "register" ? "login-card__tab--active" : ""}`}
+              onClick={() => { setActiveTab("register"); setErrorMessage(""); }}
+            >
+              Register
+            </button>
           </div>
 
-          {activeTab === "login" ? (
-            <div className="login-card__body">
-              <h2 className="login-card__heading">Login</h2>
-              <p className="login-card__lead">Login to your account</p>
+          {errorMessage && (
+            <div className="login-error-alert" role="alert">
+              ⚠️ {errorMessage}
+            </div>
+          )}
 
+<<<<<<< HEAD
               <form className="login-form" onSubmit={handleLoginSubmit}>
+=======
+          {activeTab === "login" && (
+            <div className="login-card__body">
+              <h2 className="login-card__heading">Citizen Login</h2>
+              <p className="login-card__lead">Access your land records, certificates, and grievances</p>
+
+              <form className="login-form" onSubmit={handleCitizenSubmit}>
+>>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
                 <label className="field" htmlFor="login-username">
                   <span className="field__label">Username or Email ID</span>
                   <span className="field__control">
                     <span className="field__icon" aria-hidden="true"><IconUser /></span>
-                    <input id="login-username" name="username" type="text" placeholder="Enter Username or Email ID" autoComplete="username" />
+                    <input
+                      id="login-username"
+                      name="username"
+                      type="text"
+                      placeholder="Enter Username or Email ID"
+                      value={citizenUser}
+                      onChange={(e) => setCitizenUser(e.target.value)}
+                      required
+                      autoComplete="username"
+                    />
                   </span>
                 </label>
 
@@ -219,6 +367,9 @@ function LoginPage() {
                       name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter Password"
+                      value={citizenPass}
+                      onChange={(e) => setCitizenPass(e.target.value)}
+                      required
                       autoComplete="current-password"
                     />
                     <button
@@ -232,6 +383,7 @@ function LoginPage() {
                   </span>
                 </label>
 
+<<<<<<< HEAD
                 {loginError && (
                   <p className="login-form__error" role="alert">{loginError}</p>
                 )}
@@ -243,27 +395,49 @@ function LoginPage() {
                 <button className="btn btn--primary btn--block" type="submit" disabled={loginLoading}>
                   <IconLoginGlyph />
                   {loginLoading ? "Logging in…" : "Login"}
+=======
+                <button className="btn btn--primary btn--block" type="submit" disabled={loading}>
+                  <IconLoginGlyph />
+                  {loading ? "Authenticating..." : "Login"}
+>>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
                 </button>
               </form>
 
               <div className="login-card__divider" />
 
               <p className="login-card__footer">
-                Don&apos;t have an account? <a href="#create-account">Create Account</a>
+                Don&apos;t have an account?{" "}
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={() => { setActiveTab("register"); setErrorMessage(""); }}
+                >
+                  Create Account
+                </button>
               </p>
             </div>
-          ) : (
+          )}
+
+          {activeTab === "department" && (
             <div className="login-card__body">
               <h2 className="login-card__heading">Department / Officer Login</h2>
-              <p className="login-card__lead">Login to your account</p>
+              <p className="login-card__lead">Authorized portal for Revenue, Registration &amp; Survey Officers</p>
 
+<<<<<<< HEAD
               <form className="login-form" onSubmit={handleDeptSubmit}>
+=======
+              <form className="login-form" onSubmit={handleOfficerSubmit}>
+>>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
                 <label className="field" htmlFor="dept-select">
                   <span className="field__label">Select Department</span>
                   <span className="field__control">
                     <span className="field__icon" aria-hidden="true"><IconBuilding /></span>
-                    <select id="dept-select" name="department" defaultValue="">
-                      <option value="" disabled>-- Select Department --</option>
+                    <select
+                      id="dept-select"
+                      name="department"
+                      value={deptName}
+                      onChange={(e) => setDeptName(e.target.value)}
+                    >
                       {DEPARTMENTS.map((dept) => (
                         <option key={dept} value={dept}>{dept}</option>
                       ))}
@@ -272,10 +446,19 @@ function LoginPage() {
                 </label>
 
                 <label className="field" htmlFor="dept-username">
-                  <span className="field__label">Username</span>
+                  <span className="field__label">Official Username</span>
                   <span className="field__control">
                     <span className="field__icon" aria-hidden="true"><IconUser /></span>
-                    <input id="dept-username" name="dept-username" type="text" placeholder="Enter Username" autoComplete="username" />
+                    <input
+                      id="dept-username"
+                      name="dept-username"
+                      type="text"
+                      placeholder="Enter Username (e.g. officer.revenue)"
+                      value={officerUser}
+                      onChange={(e) => setOfficerUser(e.target.value)}
+                      required
+                      autoComplete="username"
+                    />
                   </span>
                 </label>
 
@@ -288,6 +471,9 @@ function LoginPage() {
                       name="dept-password"
                       type={showDeptPassword ? "text" : "password"}
                       placeholder="Enter Password"
+                      value={officerPass}
+                      onChange={(e) => setOfficerPass(e.target.value)}
+                      required
                       autoComplete="current-password"
                     />
                     <button
@@ -301,6 +487,7 @@ function LoginPage() {
                   </span>
                 </label>
 
+<<<<<<< HEAD
                 {deptError && (
                   <p className="login-form__error" role="alert">{deptError}</p>
                 )}
@@ -312,13 +499,112 @@ function LoginPage() {
                 <button className="btn btn--primary btn--block" type="submit" disabled={deptLoading}>
                   <IconLoginGlyph />
                   {deptLoading ? "Logging in…" : "Login"}
+=======
+                <button className="btn btn--primary btn--block" type="submit" disabled={loading}>
+                  <IconLoginGlyph />
+                  {loading ? "Authenticating Officer..." : "Login to Officer Portal"}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {activeTab === "register" && (
+            <div className="login-card__body">
+              <h2 className="login-card__heading">Citizen Registration</h2>
+              <p className="login-card__lead">Create an account to track records and register grievances</p>
+
+              <form className="login-form" onSubmit={handleRegisterSubmit}>
+                <label className="field" htmlFor="reg-name">
+                  <span className="field__label">Full Name</span>
+                  <span className="field__control">
+                    <span className="field__icon" aria-hidden="true"><IconUser /></span>
+                    <input
+                      id="reg-name"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={regFullName}
+                      onChange={(e) => setRegFullName(e.target.value)}
+                      required
+                    />
+                  </span>
+                </label>
+
+                <label className="field" htmlFor="reg-username">
+                  <span className="field__label">Choose Username</span>
+                  <span className="field__control">
+                    <span className="field__icon" aria-hidden="true"><IconUser /></span>
+                    <input
+                      id="reg-username"
+                      type="text"
+                      placeholder="Choose a username"
+                      value={regUsername}
+                      onChange={(e) => setRegUsername(e.target.value)}
+                      required
+                    />
+                  </span>
+                </label>
+
+                <label className="field" htmlFor="reg-email">
+                  <span className="field__label">Email Address</span>
+                  <span className="field__control">
+                    <span className="field__icon" aria-hidden="true">✉️</span>
+                    <input
+                      id="reg-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      required
+                    />
+                  </span>
+                </label>
+
+                <label className="field" htmlFor="reg-phone">
+                  <span className="field__label">Mobile Phone (Optional)</span>
+                  <span className="field__control">
+                    <span className="field__icon" aria-hidden="true">📱</span>
+                    <input
+                      id="reg-phone"
+                      type="tel"
+                      placeholder="+91 98765 43210"
+                      value={regPhone}
+                      onChange={(e) => setRegPhone(e.target.value)}
+                    />
+                  </span>
+                </label>
+
+                <label className="field" htmlFor="reg-password">
+                  <span className="field__label">Password</span>
+                  <span className="field__control">
+                    <span className="field__icon" aria-hidden="true"><IconLock /></span>
+                    <input
+                      id="reg-password"
+                      type="password"
+                      placeholder="Create a strong password"
+                      value={regPassword}
+                      onChange={(e) => setRegPassword(e.target.value)}
+                      required
+                    />
+                  </span>
+                </label>
+
+                <button className="btn btn--primary btn--block" type="submit" disabled={loading}>
+                  {loading ? "Creating Account..." : "Create Account"}
+>>>>>>> 49b8a611da7d2ac4ba1421d1b6ea71a7a4f30b2d
                 </button>
               </form>
 
               <div className="login-card__divider" />
 
               <p className="login-card__footer">
-                Don&apos;t have an account? <a href="#contact-admin">Contact Admin</a>
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={() => { setActiveTab("login"); setErrorMessage(""); }}
+                >
+                  Back to Login
+                </button>
               </p>
             </div>
           )}
