@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 
 const DEPARTMENTS = [
@@ -66,12 +66,101 @@ function IconLoginGlyph() {
 }
 
 function LoginPage() {
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
   const [showDeptPassword, setShowDeptPassword] = useState(false);
 
-  function handleSubmit(event) {
+  // Citizen login state
+  const [loginError, setLoginError] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  // Department login state
+  const [deptError, setDeptError] = useState("");
+  const [deptLoading, setDeptLoading] = useState(false);
+
+  // ── Citizen login ─────────────────────────────────────────────────────────
+  async function handleLoginSubmit(event) {
     event.preventDefault();
+    setLoginError("");
+
+    const form = event.currentTarget;
+    const username = form.username.value.trim();
+    const password = form.password.value;
+
+    if (!username || !password) {
+      setLoginError("Please enter your username/email and password.");
+      return;
+    }
+
+    setLoginLoading(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setLoginError(data.message || "Login failed. Please try again.");
+        return;
+      }
+
+      // Persist token + user info
+      localStorage.setItem("bb_token", data.token);
+      localStorage.setItem("bb_user", JSON.stringify(data.user));
+
+      navigate("/dashboard");
+    } catch {
+      setLoginError("Could not reach the server. Please try again later.");
+    } finally {
+      setLoginLoading(false);
+    }
+  }
+
+  // ── Department / Officer login ────────────────────────────────────────────
+  async function handleDeptSubmit(event) {
+    event.preventDefault();
+    setDeptError("");
+
+    const form = event.currentTarget;
+    const department = form.department.value;
+    const username = form["dept-username"].value.trim();
+    const password = form["dept-password"].value;
+
+    if (!department || !username || !password) {
+      setDeptError("Please fill in all fields.");
+      return;
+    }
+
+    setDeptLoading(true);
+    try {
+      const res = await fetch("/api/auth/department-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ department, username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setDeptError(data.message || "Login failed. Please try again.");
+        return;
+      }
+
+      // Persist token + officer info
+      localStorage.setItem("bb_token", data.token);
+      localStorage.setItem("bb_user", JSON.stringify(data.user));
+
+      navigate("/dashboard");
+    } catch {
+      setDeptError("Could not reach the server. Please try again later.");
+    } finally {
+      setDeptLoading(false);
+    }
   }
 
   return (
@@ -112,7 +201,7 @@ function LoginPage() {
               <h2 className="login-card__heading">Login</h2>
               <p className="login-card__lead">Login to your account</p>
 
-              <form className="login-form" onSubmit={handleSubmit}>
+              <form className="login-form" onSubmit={handleLoginSubmit}>
                 <label className="field" htmlFor="login-username">
                   <span className="field__label">Username or Email ID</span>
                   <span className="field__control">
@@ -143,13 +232,17 @@ function LoginPage() {
                   </span>
                 </label>
 
+                {loginError && (
+                  <p className="login-form__error" role="alert">{loginError}</p>
+                )}
+
                 <div className="login-form__meta">
                   <a className="login-form__link" href="#forgot-password">Forgot Password?</a>
                 </div>
 
-                <button className="btn btn--primary btn--block" type="submit">
+                <button className="btn btn--primary btn--block" type="submit" disabled={loginLoading}>
                   <IconLoginGlyph />
-                  Login
+                  {loginLoading ? "Logging in…" : "Login"}
                 </button>
               </form>
 
@@ -164,7 +257,7 @@ function LoginPage() {
               <h2 className="login-card__heading">Department / Officer Login</h2>
               <p className="login-card__lead">Login to your account</p>
 
-              <form className="login-form" onSubmit={handleSubmit}>
+              <form className="login-form" onSubmit={handleDeptSubmit}>
                 <label className="field" htmlFor="dept-select">
                   <span className="field__label">Select Department</span>
                   <span className="field__control">
@@ -208,13 +301,17 @@ function LoginPage() {
                   </span>
                 </label>
 
+                {deptError && (
+                  <p className="login-form__error" role="alert">{deptError}</p>
+                )}
+
                 <div className="login-form__meta">
                   <a className="login-form__link" href="#forgot-password">Forgot Password?</a>
                 </div>
 
-                <button className="btn btn--primary btn--block" type="submit">
+                <button className="btn btn--primary btn--block" type="submit" disabled={deptLoading}>
                   <IconLoginGlyph />
-                  Login
+                  {deptLoading ? "Logging in…" : "Login"}
                 </button>
               </form>
 
